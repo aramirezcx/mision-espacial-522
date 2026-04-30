@@ -260,16 +260,16 @@ function vibratePattern(p){if(navigator.vibrate)navigator.vibrate(p);}
 var vibLoopTimer=null;
 function startVibration(){
   if(!navigator.vibrate)return;
-  navigator.vibrate([40,60,40,60,40,60,40,60,40,60]);
+  navigator.vibrate([100,50,100,50,100,50,100,50,100,50]);
   vibLoopTimer=setInterval(function(){
-    if(navigator.vibrate)navigator.vibrate([40,60,40,60,40,60,40,60,40,60]);
-  },500);
+    if(navigator.vibrate)navigator.vibrate([100,50,100,50,100,50,100,50,100,50]);
+  },550);
 }
 function stopVibration(){
   if(vibLoopTimer){clearInterval(vibLoopTimer);vibLoopTimer=null;}
   if(navigator.vibrate)navigator.vibrate(0);
 }
-function vibrateSuccess(){vibratePattern([60,60,80,60,120]);}
+function vibrateSuccess(){vibratePattern([150,80,200,80,300]);}
 
 (function(){
   const c=document.getElementById('stars');
