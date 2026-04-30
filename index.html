@@ -260,16 +260,16 @@ function vibratePattern(p){if(navigator.vibrate)navigator.vibrate(p);}
 var vibLoopTimer=null;
 function startVibration(){
   if(!navigator.vibrate)return;
-  navigator.vibrate([100,50,100,50,100,50,100,50,100,50]);
-  vibLoopTimer=setInterval(function(){
-    if(navigator.vibrate)navigator.vibrate([100,50,100,50,100,50,100,50,100,50]);
-  },550);
+  // Patrón corto y se repite frecuentemente para mayor confiabilidad
+  function doVib(){if(navigator.vibrate)navigator.vibrate([120,60,120,60,120]);}
+  doVib();
+  vibLoopTimer=setInterval(doVib,360);
 }
 function stopVibration(){
   if(vibLoopTimer){clearInterval(vibLoopTimer);vibLoopTimer=null;}
   if(navigator.vibrate)navigator.vibrate(0);
 }
-function vibrateSuccess(){vibratePattern([150,80,200,80,300]);}
+function vibrateSuccess(){if(navigator.vibrate)navigator.vibrate([150,80,200,80,300]);}
 
 (function(){
   const c=document.getElementById('stars');
@@ -281,7 +281,12 @@ function vibrateSuccess(){vibratePattern([150,80,200,80,300]);}
   }
 })();
 
-function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function getCtx(){
+  if(!actx) actx=new(window.AudioContext||window.webkitAudioContext)();
+  // Si el contexto fue suspendido por el navegador, lo despertamos
+  if(actx.state==='suspended') actx.resume();
+  return actx;
+}
 
 let ambientStarted=false;
 function startAmbient(){
@@ -439,6 +444,9 @@ function toggleMute(){
 function startScan(e){
   e.preventDefault();
   if(!canScan||isScanning)return;
+  // Despertar audio context inmediatamente al tocar
+  const ac=getCtx();
+  if(ac.state==='suspended') ac.resume();
   startAmbient();isScanning=true;scanStart=Date.now();
   document.getElementById('handZone').classList.add('scanning');
   document.getElementById('instruction').textContent='Escaneando huella... no muevas el pulgar';
