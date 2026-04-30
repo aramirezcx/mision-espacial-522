@@ -257,8 +257,18 @@ let isScanning=false,canScan=true,scanTimer=null,progInterval=null,scanStart=nul
 let actx=null,muted=false,scanOsc=null,scanGain=null,scanTrem=null,scanOsc2=null,scanGain2=null;
 
 function vibratePattern(p){if(navigator.vibrate)navigator.vibrate(p);}
-function startVibration(){vibratePattern([30,80,30,80,30,80,30,80,30,80,30,80,30,80,30,80,30,80,30,80,30]);}
-function stopVibration(){if(navigator.vibrate)navigator.vibrate(0);}
+var vibLoopTimer=null;
+function startVibration(){
+  if(!navigator.vibrate)return;
+  navigator.vibrate([40,60,40,60,40,60,40,60,40,60]);
+  vibLoopTimer=setInterval(function(){
+    if(navigator.vibrate)navigator.vibrate([40,60,40,60,40,60,40,60,40,60]);
+  },500);
+}
+function stopVibration(){
+  if(vibLoopTimer){clearInterval(vibLoopTimer);vibLoopTimer=null;}
+  if(navigator.vibrate)navigator.vibrate(0);
+}
 function vibrateSuccess(){vibratePattern([60,60,80,60,120]);}
 
 (function(){
